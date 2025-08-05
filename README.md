@@ -1,2 +1,3 @@
 # GFSK-Protocols
-A little work from FT8/FT4
+Inspired from FT8/FT4
+Maybe just a school-work
