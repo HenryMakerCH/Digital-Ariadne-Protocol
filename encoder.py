@@ -9,10 +9,14 @@ a1.insert(0," ")
 a3 = all_num.copy()
 a4 = all_cap.copy()
 a4.insert(0," ")
+c = a1.copy()
+c.append("/")
 
 ntokens = 2063592
 max22 = 4194304
 maxchar4=32400
+nprime = 47055833459
+nbits = [10, 12, 22]
 
 def std_call_to_c28(std_call):
     ind = []
@@ -42,26 +46,56 @@ def char4_to_g15(char4):
         j2 = (ord(char4[1]) - ord('A')) * 10 * 10
         j3 = (ord(char4[2]) - ord('0')) * 10
         j4 = (ord(char4[3]) - ord('0'))
-        ichar4 = j1 + j2 + j3 + j4
+        g15 = j1 + j2 + j3 + j4
     else:
-        # Handle special cases
         if not char4:  # Empty string
-            irpt = 1
+            rpt = 1
         elif char4 == 'RRR':
-            irpt = 2
+            rpt = 2
         elif char4 == 'RR73':
-            irpt = 3
+            rpt = 3
         elif char4 == '73':
-            irpt = 4
+            rpt = 4
         elif char4[0] in ('+', '-'):
-            irpt = int(char4) + 35
-        ichar4 = maxchar4 + irpt
-    g15 = "{:015b}".format(ichar4)
+            rpt = int(char4) + 35
+        g15 = maxchar4 + rpt
+    g15 = "{:015b}".format(g15)
     return g15
 
-#def hashcodes():
-
-
+def hashcodes(call,htype='h22b'):
+    call = call.ljust(11)
+    n8 = 0
+    for char in call:
+        pos = c.index(char)
+        n8 = n8 * 38 + pos
+    hashes = []
+    for k in range(3):
+        product = nprime * n8
+        shift_amount = 64 - nbits[k]
+        if shift_amount > 0:
+            low_64 = product & 0xFFFFFFFFFFFFFFFF
+            if low_64 & 0x8000000000000000:
+                shifted = ~((~low_64) >> shift_amount)
+            else:
+                shifted = low_64 >> shift_amount
+        else:
+            shifted = product
+        hashes.append(shifted)
+    h22_bias = hashes[2] + ntokens
+    h10 = "{:010b}".format(hashes[0])
+    h12 = "{:012b}".format(hashes[1])
+    h22 = "{:022b}".format(hashes[2])
+    h22b = "{:028b}".format(h22_bias)
+    if htype == 'h10':
+        result = h10
+    elif htype == 'h12':
+        result = h12
+    elif htype == 'h22':
+        result = h22
+    else:
+        result = h22b
+    return result
+    
 #def gen_crc14():
 
 
@@ -74,4 +108,4 @@ def char4_to_g15(char4):
 #def grid6_to_g25():
 
 
-print (char4_to_g15(input()))
+print (hashcodes(input(),input()))
