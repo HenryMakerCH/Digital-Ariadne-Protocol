@@ -17,6 +17,7 @@ max22 = 4194304
 maxchar4=32400
 nprime = 47055833459
 nbits = [10, 12, 22]
+crc_poly=[1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1] #0x6757
 
 def std_call_to_c28(std_call):
     ind = []
@@ -96,8 +97,21 @@ def hashcodes(call,htype='h22b'):
         result = h22b
     return result
     
-#def gen_crc14():
-
+def gen_crc14(msg77):
+    msg96 = [int(bit) for bit in msg77] + [0] * 19
+    r = msg96[:15]
+    for i in range(82):
+        r[14] = msg96[14 + i]
+        if r[0] == 1:
+            for j in range(15):
+                r[j] ^= crc_poly[j]
+        r.append(0)
+        del r[0]
+    crc_bits = r[:14]
+    crc_str = ''.join(str(bit) for bit in crc_bits)
+    crc_int = int(crc_str, 2)
+    crc_bits = "{:014b}".format(crc_int)
+    return crc_bits
 
 #def nonstd_to_c58():
 
@@ -108,4 +122,4 @@ def hashcodes(call,htype='h22b'):
 #def grid6_to_g25():
 
 
-print (hashcodes(input(),input()))
+print (gen_crc14(input()))
