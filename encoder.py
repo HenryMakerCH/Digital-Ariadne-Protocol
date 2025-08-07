@@ -122,4 +122,4 @@ def gen_crc14(msg77):
 #def grid6_to_g25():
 
 
-print (gen_crc14(input()))
+#print (gen_crc14(input()))
