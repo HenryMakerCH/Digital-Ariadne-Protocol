@@ -1,10 +1,14 @@
 import encoder as en
+import ldpc
+import bitprocess as bit
+
+sync = '3140652'
 
 if __name__ == '__main__':
     #msg1. c28a r1 c28b r1 R1 g15 n3 i3 crc14
-    call1 = input ("Call 1 as c28")
-    call2 = input ("Call 2 as c28")
-    msg4 = input ("Report msg")
+    call1 = input ("Call 1 as c28: ")
+    call2 = input ("Call 2 as c28: ")
+    msg4 = input ("Report msg: ")
     
     c28a = en.std_call_to_c28(call1)
     c28b = en.std_call_to_c28(call2)
@@ -16,4 +20,14 @@ if __name__ == '__main__':
     
     msg77 = "{:028}{:01b}{:028}{:01b}{:01}{:015}{:03b}".format(c28a,r1,c28b,r1,R1,g15,i3)
     msg91 = "{:077}{:014}".format(msg77,en.gen_crc14(msg77))
+    msg174 = "{:091}{:083}".format(msg91,ldpc.encode(msg91))
     
+    channel79 = bit.bit_to_channel(msg174)
+    
+    tx_msg = list(channel79)
+    tx_msg.insert(58,sync)
+    tx_msg.insert(29,sync)
+    tx_msg.insert(0,sync)
+    tx_msg = ''.join(tx_msg)
+
+    print (tx_msg)
